@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
+import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -53,13 +55,21 @@ const Button = styled.button`
 
 function Login() {
   const auth = getAuth();
+  const { user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const handleGoogle = async () => {
     const provider = new GoogleAuthProvider();
 
     const res = await signInWithPopup(auth, provider);
-    console.log(res);
+    console.log("google login", res);
   };
+
+  if (user?.uid) {
+    navigate("/");
+    return;
+  }
   return (
     <LoginContainer>
       <Title>Welcome to Note App</Title>
